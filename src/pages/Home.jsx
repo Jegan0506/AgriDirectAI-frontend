@@ -7,7 +7,7 @@ function Home() {
       {/* Navbar */}
       <nav className="navbar">
         <div className="logo">
-          🌾 <span>UzhavarSetu</span> AI
+          🌾 <span>UzhavarSetu</span> 
         </div>
 
         <div className="nav-links">
@@ -34,7 +34,7 @@ function Home() {
           </h1>
 
           <p>
-            UzhavarSetu AI helps farmers discover the right market,
+            UzhavarSetu helps farmers discover the right market,
             compare buyers, predict prices and maximize their profit.
           </p>
 
@@ -113,7 +113,7 @@ function Home() {
           <span>POWERFUL FEATURES</span>
           <h2>Everything you need to sell smarter</h2>
           <p>
-            From price discovery to logistics, UzhavarSetu AI connects
+            From price discovery to logistics, UzhavarSetu connects
             the complete agricultural selling journey.
           </p>
         </div>
@@ -224,7 +224,7 @@ function Home() {
       {/* Footer */}
       <footer>
         <div className="logo">
-          🌾 <span>UzhavarSetu</span> AI
+          🌾 <span>UzhavarSetu</span>
         </div>
 
         <p>
@@ -232,7 +232,7 @@ function Home() {
         </p>
 
         <small>
-          © 2026 UzhavarSetu AI. Built for smarter agriculture.
+          © 2026 UzhavarSetu. Built for smarter agriculture.
         </small>
       </footer>
 
