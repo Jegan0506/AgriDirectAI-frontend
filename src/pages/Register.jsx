@@ -111,13 +111,13 @@ function Register() {
       <div className="auth-card">
 
         <div className="auth-logo">
-          🌾 <span>UzhavarSetu</span> AI
+          🌾 <span>UzhavarSetu</span>
         </div>
 
         <h1>Create Account</h1>
 
         <p className="auth-subtitle">
-          Join UzhavarSetu AI and connect directly with the market.
+          Join UzhavarSetu and connect directly with the market.
         </p>
 
         {statusMessage && (

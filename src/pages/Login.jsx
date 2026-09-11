@@ -88,7 +88,7 @@ function Login() {
       <div className="auth-card">
 
         <div className="auth-logo">
-          🌾 <span>UzhavarSetu</span> AI
+          🌾 <span>UzhavarSetu</span>
         </div>
 
         <h1>Welcome Back</h1>
