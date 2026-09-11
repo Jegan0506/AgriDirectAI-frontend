@@ -50,7 +50,7 @@ function Login() {
       }
 
       localStorage.setItem(
-        "agriDirectUser",
+        "UzhavarSetuUser",
         JSON.stringify({
           ...data.user,
           role: data.role
@@ -88,7 +88,7 @@ function Login() {
       <div className="auth-card">
 
         <div className="auth-logo">
-          🌾 <span>AgriDirect</span> AI
+          🌾 <span>UzhavarSetu</span> AI
         </div>
 
         <h1>Welcome Back</h1>

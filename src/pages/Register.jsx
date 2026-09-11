@@ -111,13 +111,13 @@ function Register() {
       <div className="auth-card">
 
         <div className="auth-logo">
-          🌾 <span>AgriDirect</span> AI
+          🌾 <span>UzhavarSetu</span> AI
         </div>
 
         <h1>Create Account</h1>
 
         <p className="auth-subtitle">
-          Join AgriDirect AI and connect directly with the market.
+          Join UzhavarSetu AI and connect directly with the market.
         </p>
 
         {statusMessage && (

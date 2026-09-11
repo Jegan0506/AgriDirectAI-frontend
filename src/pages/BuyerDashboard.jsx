@@ -528,7 +528,7 @@ function BuyerDashboard() {
 
         <div>
           <h1>
-            🌾 AgriDirect AI
+            🌾 UzhavarSetu
           </h1>
 
           <p>

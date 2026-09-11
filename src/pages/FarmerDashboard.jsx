@@ -72,7 +72,7 @@ function FarmerDashboard() {
   useEffect(() => {
     const savedUser =
       localStorage.getItem(
-        "agriDirectUser"
+        "UzhavarSetuUser"
       );
 
     if (!savedUser) {
@@ -88,7 +88,7 @@ function FarmerDashboard() {
         user.role !== "farmer"
       ) {
         localStorage.removeItem(
-          "agriDirectUser"
+          "UzhavarSetuUser"
         );
 
         navigate("/login");
@@ -104,7 +104,7 @@ function FarmerDashboard() {
       console.log(error);
 
       localStorage.removeItem(
-        "agriDirectUser"
+        "UzhavarSetuUser"
       );
 
       navigate("/login");
@@ -281,7 +281,7 @@ function FarmerDashboard() {
 
   const handleLogout = () => {
     localStorage.removeItem(
-      "agriDirectUser"
+      "UzhavarSetuUser"
     );
 
     navigate("/login");
@@ -708,7 +708,7 @@ function FarmerDashboard() {
 
           const savedUser =
             localStorage.getItem(
-              "agriDirectUser"
+              "UzhavarSetuUser"
             );
 
           if (savedUser) {
@@ -718,7 +718,7 @@ function FarmerDashboard() {
               );
 
             localStorage.setItem(
-              "agriDirectUser",
+              "UzhavarSetuUser",
               JSON.stringify({
                 ...user,
                 ...updatedFarmer,
@@ -1056,7 +1056,7 @@ function FarmerDashboard() {
 
         <div>
           <h1>
-            🌾 AgriDirect AI
+            🌾 UzhavarSetu
           </h1>
 
           <p>
@@ -2079,7 +2079,7 @@ function FarmerDashboard() {
               <div>
 
                 <h3>
-                  🤖 AgriDirect AI Forecast
+                  🤖 UzhavarSetu AI Forecast
                 </h3>
 
                 <p>
