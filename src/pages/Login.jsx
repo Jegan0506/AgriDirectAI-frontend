@@ -1,9 +1,12 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { API_URL } from "../config";
+import { useLanguage } from "../context/LanguageContext";
+import LanguageSelector from "../components/LanguageSelector";
 
 function Login() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const [role, setRole] = useState("");
   const [email, setEmail] = useState("");
@@ -86,17 +89,21 @@ function Login() {
 
   return (
     <div className="auth-page">
-      <div className="auth-card">
+      <div className="auth-card" style={{ position: "relative" }}>
 
-        <div className="auth-logo" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px" }}>
-          <img src="/logo.png" alt="Logo" style={{ width: "40px", height: "40px", borderRadius: "8px", objectFit: "contain", background: "#fff", padding: "2px" }} />
-          <span>UzhavarSetu</span>
+        <div style={{ position: "absolute", top: "18px", right: "20px" }}>
+          <LanguageSelector />
         </div>
 
-        <h1>Welcome Back</h1>
+        <div className="auth-logo" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", marginTop: "10px" }}>
+          <img src="/logo.png" alt="Logo" style={{ width: "40px", height: "40px", borderRadius: "8px", objectFit: "contain", background: "#fff", padding: "2px" }} />
+          <span>{t("appName")}</span>
+        </div>
+
+        <h1>{t("welcomeBack")}</h1>
 
         <p className="auth-subtitle">
-          Login to continue to your agricultural marketplace.
+          {t("loginSubtitle")}
         </p>
 
         {statusMessage && (
@@ -106,7 +113,7 @@ function Login() {
         )}
 
         <div className="role-title">
-          Select your account
+          {t("selectAccount")}
         </div>
 
         <div className="role-buttons">
@@ -123,10 +130,10 @@ function Login() {
             <span>👨‍🌾</span>
 
             <div>
-              <strong>Farmer</strong>
+              <strong>{t("farmerRole")}</strong>
 
               <small>
-                Sell your produce
+                {t("farmerRoleSub")}
               </small>
             </div>
           </button>
@@ -143,10 +150,10 @@ function Login() {
             <span>🏪</span>
 
             <div>
-              <strong>Buyer</strong>
+              <strong>{t("buyerRole")}</strong>
 
               <small>
-                Buy fresh produce
+                {t("buyerRoleSub")}
               </small>
             </div>
           </button>
@@ -163,10 +170,10 @@ function Login() {
             <span>🚚</span>
 
             <div>
-              <strong>Transporter</strong>
+              <strong>{t("transporterRole")}</strong>
 
               <small>
-                Deliver produce
+                {t("transporterRoleSub")}
               </small>
             </div>
           </button>
@@ -174,7 +181,7 @@ function Login() {
 
         <input
           type="email"
-          placeholder="Email address"
+          placeholder={t("emailAddress")}
           className="auth-input"
           value={email}
           onChange={(e) =>
@@ -184,7 +191,7 @@ function Login() {
 
         <input
           type="password"
-          placeholder="Password"
+          placeholder={t("password")}
           className="auth-input"
           value={password}
           onChange={(e) =>
@@ -198,14 +205,14 @@ function Login() {
           disabled={loading}
         >
           {loading
-            ? "Logging in..."
-            : "Login"}
+            ? t("loggingIn")
+            : t("login")}
         </button>
 
         <p className="auth-footer">
-          Don't have an account?{" "}
+          {t("dontHaveAccount")}{" "}
           <Link to="/register">
-            Create one
+            {t("createOne")}
           </Link>
         </p>
 

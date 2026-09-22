@@ -711,11 +711,11 @@ function BuyerDashboard() {
         <div>
           <h1 style={{ display: "flex", alignItems: "center", gap: "12px" }}>
             <img src="/logo.png" alt="Logo" style={{ width: "38px", height: "38px", borderRadius: "8px", objectFit: "contain", background: "#fff", padding: "2px" }} />
-            UzhavarSetu
+            {t("appName")}
           </h1>
 
           <p>
-            Buyer Dashboard
+            {t("buyerPortalSub")}
           </p>
         </div>
 
@@ -905,7 +905,7 @@ function BuyerDashboard() {
                         style={{ flex: 1, margin: 0 }}
                         onClick={() => navigate("/buyer-profile")}
                       >
-                        ✏️ Edit Profile & Payment Details
+                        ✏️ {t("editProfile")}
                       </button>
                       <button
                         className="logout-btn"
@@ -927,7 +927,7 @@ function BuyerDashboard() {
                           transition: "all 0.2s ease"
                         }}
                       >
-                        🚪 Logout
+                        🚪 {t("logout")}
                       </button>
                     </div>
 
@@ -1116,11 +1116,11 @@ function BuyerDashboard() {
             <div>
 
               <h2>
-                Find Farmer Produce
+                {t("availableMarket")}
               </h2>
 
               <p>
-                Discover fresh produce directly from farmers
+                {t("availableMarketDesc")}
               </p>
 
             </div>
@@ -1137,7 +1137,7 @@ function BuyerDashboard() {
 
           <input
             type="text"
-            placeholder="Search by crop name..."
+            placeholder={t("searchCropPlaceholder")}
             value={searchCrop}
             onChange={(e) =>
               setSearchCrop(
@@ -1166,7 +1166,7 @@ function BuyerDashboard() {
       <div className="my-produce-list">
 
         <h2>
-          🌾 Available Produce
+          {t("availableMarket")}
         </h2>
 
         {loading ? (
@@ -1441,7 +1441,7 @@ function BuyerDashboard() {
       )}
 
       <div className="my-bids-section">
-        <h2>💰 My Bids</h2>
+        <h2>{t("previousBids")}</h2>
 
         {myBids.length === 0 ? (
           <p>

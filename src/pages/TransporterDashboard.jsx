@@ -262,7 +262,7 @@ function TransporterDashboard() {
       <header className="dashboard-header">
         <div className="dashboard-logo" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <img src="/logo.png" alt="Logo" style={{ width: "32px", height: "32px", borderRadius: "6px", objectFit: "contain", background: "#fff", padding: "2px" }} />
-          <span>UzhavarSetu • Transporter Portal</span>
+          <span>{t("appName")} • {t("transporterPortalSub")}</span>
         </div>
 
         <div className="profile-wrapper" style={{ display: "flex", alignItems: "center", gap: "12px" }}>
@@ -271,7 +271,7 @@ function TransporterDashboard() {
             className="profile-button"
             onClick={() => setProfileOpen(!profileOpen)}
           >
-            🚚 {transporter?.name || "Transporter"} ▾
+            🚚 {transporter?.name || t("transporterRole")} ▾
           </button>
 
           {profileOpen && (
@@ -327,11 +327,11 @@ function TransporterDashboard() {
                     className="edit-profile-btn"
                     onClick={() => navigate("/transporter-profile")}
                   >
-                    ✏️ Edit Profile & Bank Details
+                    ✏️ {t("editProfile")}
                   </button>
 
                   <button className="logout-button" onClick={handleLogout}>
-                    🚪 Logout
+                    🚪 {t("logout")}
                   </button>
                 </div>
               ) : (
@@ -401,13 +401,13 @@ function TransporterDashboard() {
                       className="save-profile-btn"
                       onClick={handleSaveProfile}
                     >
-                      💾 Save Changes
+                      💾 {t("saveChanges")}
                     </button>
                     <button
                       className="cancel-profile-btn"
                       onClick={() => setEditProfile(false)}
                     >
-                      Cancel
+                      {t("cancel")}
                     </button>
                   </div>
                 </div>
@@ -422,9 +422,9 @@ function TransporterDashboard() {
         {/* WELCOME BANNER */}
         <div className="dashboard-welcome">
           <div>
-            <span className="dashboard-small-title">🚚 TRANSPORTER MANAGEMENT DASHBOARD</span>
-            <h1>Welcome back, {profileForm.companyName || transporter?.name || "Transporter"}!</h1>
-            <p>Review incoming transport requests from buyers, accept or reject assignments, and manage pickup & delivery logistics.</p>
+            <span className="dashboard-small-title">🚚 {t("transporterManagementDashboard")}</span>
+            <h1>{t("welcomeTransporter")}, {profileForm.companyName || transporter?.name || t("transporterRole")}!</h1>
+            <p>{t("welcomeTransporterDesc")}</p>
           </div>
         </div>
 
@@ -440,7 +440,7 @@ function TransporterDashboard() {
             <span>📥</span>
             <div>
               <strong>{incomingRequests.length}</strong>
-              <small>Incoming Requests</small>
+              <small>{t("incomingRequests")}</small>
             </div>
           </div>
 
@@ -448,7 +448,7 @@ function TransporterDashboard() {
             <span>🚚</span>
             <div>
               <strong>{activeCount}</strong>
-              <small>Active Pickups</small>
+              <small>{t("activePickups")}</small>
             </div>
           </div>
 
@@ -456,7 +456,7 @@ function TransporterDashboard() {
             <span>✅</span>
             <div>
               <strong>{completedCount}</strong>
-              <small>Completed Trips</small>
+              <small>{t("completedTrips")}</small>
             </div>
           </div>
 
@@ -464,7 +464,7 @@ function TransporterDashboard() {
             <span>💰</span>
             <div>
               <strong>₹{totalEarnings.toLocaleString("en-IN")}</strong>
-              <small>Total Freight Earned</small>
+              <small>{t("totalFreightEarned")}</small>
             </div>
           </div>
         </div>
@@ -473,16 +473,16 @@ function TransporterDashboard() {
         <div className="dashboard-section" style={{ background: "#ffffff", borderRadius: "16px", padding: "24px", border: "1.5px solid #FDE68A", borderTop: "5px solid #D97706", boxShadow: "0 4px 16px rgba(0,0,0,0.03)", marginBottom: "28px" }}>
           <div style={{ marginBottom: "18px" }}>
             <h2 style={{ margin: "0 0 4px 0", fontSize: "20px", fontWeight: "800", color: "#1A202C", display: "flex", alignItems: "center", gap: "8px" }}>
-              📩 Incoming Shipment Requests
+              {t("incomingRequests")}
             </h2>
             <p style={{ margin: 0, fontSize: "13px", color: "#64748B" }}>
-              Shipment requests assigned to you by buyers upon produce payment. Review details and Accept or Reject the transport assignment.
+              {t("incomingRequestsDesc")}
             </p>
           </div>
 
           {incomingRequests.length === 0 ? (
             <div style={{ background: "#FEF3C7", color: "#92400E", padding: "16px", borderRadius: "12px", fontSize: "14px", fontWeight: "600", textAlign: "center" }}>
-              ℹ️ No pending incoming shipment requests from buyers at the moment.
+              ℹ️ {t("noPendingRequests")}
             </div>
           ) : (
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: "16px" }}>
@@ -496,19 +496,19 @@ function TransporterDashboard() {
                       <span style={{ fontSize: "12px", color: "#D97706", fontWeight: "700" }}>🚛 {req.vehicleType || "Mini Truck"}</span>
                     </div>
                     <span className="status-badge" style={{ background: "#FEF3C7", color: "#B45309", padding: "4px 10px", borderRadius: "20px", fontSize: "11px", fontWeight: "700" }}>
-                      Pending Approval
+                      {t("pendingApproval")}
                     </span>
                   </div>
 
                   <div style={{ background: "#FFFFFF", border: "1px solid #F3F4F6", borderRadius: "10px", padding: "12px", fontSize: "13px", color: "#334155", marginBottom: "14px" }}>
-                    <p style={{ margin: "0 0 6px 0" }}>📍 <strong>Pickup:</strong> {req.pickupLocation}</p>
-                    <p style={{ margin: "0 0 6px 0" }}>🏁 <strong>Destination:</strong> {req.destination}</p>
-                    <p style={{ margin: "0 0 6px 0" }}>👤 <strong>Farmer:</strong> {req.farmerName || "Farmer"}</p>
-                    <p style={{ margin: 0 }}>🛍️ <strong>Buyer:</strong> {req.buyerName || "Buyer"}</p>
+                    <p style={{ margin: "0 0 6px 0" }}>📍 <strong>{t("pickup")}:</strong> {req.pickupLocation}</p>
+                    <p style={{ margin: "0 0 6px 0" }}>🏁 <strong>{t("destination")}:</strong> {req.destination}</p>
+                    <p style={{ margin: "0 0 6px 0" }}>👤 <strong>{t("farmer")}:</strong> {req.farmerName || t("farmerRole")}</p>
+                    <p style={{ margin: 0 }}>🛍️ <strong>{t("buyer")}:</strong> {req.buyerName || t("buyerRole")}</p>
                   </div>
 
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
-                    <small style={{ color: "#64748B" }}>Freight Offer</small>
+                    <small style={{ color: "#64748B" }}>{t("freightOffer")}</small>
                     <strong style={{ fontSize: "18px", color: "#2F5233", fontWeight: "800" }}>
                       ₹{(req.transportCost || 18500).toLocaleString("en-IN")}
                     </strong>
@@ -519,13 +519,13 @@ function TransporterDashboard() {
                       onClick={() => handleAcceptRequest(req._id)}
                       style={{ background: "#2F5233", color: "#FFFFFF", border: "none", borderRadius: "10px", padding: "10px", fontWeight: "700", fontSize: "13px", cursor: "pointer" }}
                     >
-                      ✅ Accept Request
+                      {t("acceptShipment")}
                     </button>
                     <button
                       onClick={() => handleRejectRequest(req._id)}
                       style={{ background: "#FEE2E2", color: "#991B1B", border: "1px solid #FCA5A5", borderRadius: "10px", padding: "10px", fontWeight: "700", fontSize: "13px", cursor: "pointer" }}
                     >
-                      ❌ Reject
+                      {t("rejectShipment")}
                     </button>
                   </div>
                 </div>
@@ -538,16 +538,16 @@ function TransporterDashboard() {
         <div className="dashboard-section" style={{ background: "#ffffff", borderRadius: "16px", padding: "24px", border: "1.5px solid #C4E2C7", borderTop: "5px solid #3F7D4A", boxShadow: "0 4px 16px rgba(0,0,0,0.03)" }}>
           <div style={{ marginBottom: "18px" }}>
             <h2 style={{ margin: "0 0 4px 0", fontSize: "20px", fontWeight: "800", color: "#1A202C", display: "flex", alignItems: "center", gap: "8px" }}>
-              🚚 Transporter Pickups & Delivery Details History
+              {t("pickupsHistory")}
             </h2>
             <p style={{ margin: 0, fontSize: "13px", color: "#64748B" }}>
-              Complete history of accepted pickups, ongoing shipments, driver contact details, freight settlement status, and delivery tracking.
+              {t("pickupsHistoryDesc")}
             </p>
           </div>
 
           {pickupHistory.length === 0 ? (
             <div style={{ background: "#F1F5F9", color: "#475569", padding: "16px", borderRadius: "12px", fontSize: "14px", fontWeight: "600", textAlign: "center" }}>
-              ℹ️ No previous pickup history found.
+              ℹ️ {t("noPickupHistory")}
             </div>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
@@ -559,7 +559,7 @@ function TransporterDashboard() {
                         {item.crop} — {item.quantity} kg
                       </h3>
                       <p style={{ margin: "2px 0 0 0", fontSize: "13px", color: "#64748B" }}>
-                        Pickup: <strong>{item.pickupLocation}</strong> ➔ Destination: <strong>{item.destination}</strong>
+                        {t("pickup")}: <strong>{item.pickupLocation}</strong> ➔ {t("destination")}: <strong>{item.destination}</strong>
                       </p>
                     </div>
                     <span className={`status-badge status-${item.status.toLowerCase().replace(/\s+/g, "-")}`} style={{ fontSize: "12px", padding: "6px 14px" }}>
@@ -569,28 +569,28 @@ function TransporterDashboard() {
 
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "12px", background: "#FFFFFF", padding: "14px", borderRadius: "10px", border: "1px solid #F1F5F9", marginBottom: "14px", fontSize: "13px" }}>
                     <div>
-                      <small style={{ color: "#64748B", display: "block" }}>Vehicle Assigned</small>
+                      <small style={{ color: "#64748B", display: "block" }}>{t("vehicleAssigned")}</small>
                       <strong>🚛 {item.vehicleType || "Mini Truck"}</strong>
                     </div>
                     <div>
-                      <small style={{ color: "#64748B", display: "block" }}>Freight Settlement Fee</small>
+                      <small style={{ color: "#64748B", display: "block" }}>{t("freightFee")}</small>
                       <strong style={{ color: "#2F5233" }}>₹{(item.transportCost || 18500).toLocaleString("en-IN")}</strong>
                     </div>
                     <div>
-                      <small style={{ color: "#64748B", display: "block" }}>Driver & Contact</small>
+                      <small style={{ color: "#64748B", display: "block" }}>{t("driverContact")}</small>
                       <strong>📞 +91 98421 88321</strong>
                     </div>
                     <div>
-                      <small style={{ color: "#64748B", display: "block" }}>Freight Payment</small>
+                      <small style={{ color: "#64748B", display: "block" }}>{t("freightFee")}</small>
                       <span style={{ color: item.freightPaid ? "#166534" : "#D97706", fontWeight: "700" }}>
-                        {item.freightPaid ? "✓ Paid to Transporter" : "Freight Settlement Pending"}
+                        {item.freightPaid ? t("paidToTransporter") : t("freightPending")}
                       </span>
                     </div>
                   </div>
 
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <span style={{ fontSize: "12px", color: "#64748B" }}>
-                      Farmer: <strong>{item.farmerName || "Farmer"}</strong> • Buyer: <strong>{item.buyerName || "Buyer"}</strong>
+                      {t("farmer")}: <strong>{item.farmerName || t("farmerRole")}</strong> • {t("buyer")}: <strong>{item.buyerName || t("buyerRole")}</strong>
                     </span>
 
                     {item.status !== "Delivered" ? (
@@ -599,12 +599,12 @@ function TransporterDashboard() {
                         style={{ background: "#3F7D4A", color: "#FFFFFF", border: "none", borderRadius: "8px", padding: "8px 16px", fontSize: "12px", fontWeight: "700", cursor: "pointer" }}
                       >
                         {item.status === "In Transit" || item.status === "Picked Up"
-                          ? "✅ Mark Delivered"
-                          : "🚚 Mark In Transit"}
+                          ? t("markDelivered")
+                          : t("markInTransit")}
                       </button>
                     ) : (
                       <span style={{ background: "#F0FDF4", color: "#166534", border: "1px solid #BBF7D0", padding: "6px 14px", borderRadius: "8px", fontSize: "12px", fontWeight: "700" }}>
-                        ✓ Shipment Delivered Successfully
+                        {t("shipmentDelivered")}
                       </span>
                     )}
                   </div>

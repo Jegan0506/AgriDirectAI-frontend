@@ -1112,11 +1112,11 @@ function FarmerDashboard() {
         <div>
           <h1 style={{ display: "flex", alignItems: "center", gap: "12px" }}>
             <img src="/logo.png" alt="Logo" style={{ width: "38px", height: "38px", borderRadius: "8px", objectFit: "contain", background: "#fff", padding: "2px" }} />
-            UzhavarSetu
+            {t("appName")}
           </h1>
 
           <p>
-            Farmer Dashboard
+            {t("farmerPortalSub")}
           </p>
         </div>
 
@@ -1482,12 +1482,11 @@ function FarmerDashboard() {
           <div>
 
             <h2>
-              🌾 Add Produce
+              {t("addProduce")}
             </h2>
 
             <p>
-              List your crops directly
-              for buyers
+              {t("addProduceDesc")}
             </p>
 
           </div>
@@ -1503,8 +1502,8 @@ function FarmerDashboard() {
             }}
           >
             {showForm
-              ? "✕ Close"
-              : "＋ Add Produce"}
+              ? t("closeForm")
+              : t("addProduceBtn")}
           </button>
 
         </div>
@@ -1760,11 +1759,11 @@ function FarmerDashboard() {
           <div>
 
             <h2>
-              🌾 My Produce
+              {t("myProduceListings")}
             </h2>
 
             <p>
-              Your currently listed crops
+              {t("myProduceListingsDesc")}
             </p>
 
           </div>
@@ -1857,12 +1856,11 @@ function FarmerDashboard() {
           <div>
 
             <h2>
-              🤖 AI Forecast
+              {t("aiPriceForecast")}
             </h2>
 
             <p>
-              Get AI-powered selling
-              recommendations
+              Get AI-powered price forecast & recommendations
             </p>
 
           </div>

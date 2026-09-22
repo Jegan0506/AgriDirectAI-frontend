@@ -1,9 +1,12 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { API_URL } from "../config";
+import { useLanguage } from "../context/LanguageContext";
+import LanguageSelector from "../components/LanguageSelector";
 
 function Register() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const [role, setRole] = useState("");
 
@@ -14,11 +17,8 @@ function Register() {
     password: ""
   });
 
-  const [statusMessage, setStatusMessage] =
-    useState("");
-
-  const [loading, setLoading] =
-    useState(false);
+  const [statusMessage, setStatusMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setForm({
@@ -38,7 +38,6 @@ function Register() {
       setStatusMessage(
         "Please fill all details and select your role"
       );
-
       return;
     }
 
@@ -46,7 +45,6 @@ function Register() {
       setStatusMessage(
         "Password must contain at least 6 characters"
       );
-
       return;
     }
 
@@ -75,10 +73,8 @@ function Register() {
 
       if (!response.ok) {
         setStatusMessage(
-          data.message ||
-            "Registration failed"
+          data.message || "Registration failed"
         );
-
         return;
       }
 
@@ -106,18 +102,21 @@ function Register() {
 
   return (
     <div className="auth-page">
+      <div className="auth-card" style={{ position: "relative" }}>
 
-      <div className="auth-card">
-
-        <div className="auth-logo" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px" }}>
-          <img src="/logo.png" alt="Logo" style={{ width: "40px", height: "40px", borderRadius: "8px", objectFit: "contain", background: "#fff", padding: "2px" }} />
-          <span>UzhavarSetu</span>
+        <div style={{ position: "absolute", top: "18px", right: "20px" }}>
+          <LanguageSelector />
         </div>
 
-        <h1>Create Account</h1>
+        <div className="auth-logo" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", marginTop: "10px" }}>
+          <img src="/logo.png" alt="Logo" style={{ width: "40px", height: "40px", borderRadius: "8px", objectFit: "contain", background: "#fff", padding: "2px" }} />
+          <span>{t("appName")}</span>
+        </div>
+
+        <h1>{t("createAccount")}</h1>
 
         <p className="auth-subtitle">
-          Join UzhavarSetu and connect directly with the market.
+          {t("registerSubtitle")}
         </p>
 
         {statusMessage && (
@@ -129,7 +128,7 @@ function Register() {
         <input
           type="text"
           name="name"
-          placeholder="Full name"
+          placeholder={t("fullName")}
           className="auth-input"
           value={form.name}
           onChange={handleChange}
@@ -138,7 +137,7 @@ function Register() {
         <input
           type="email"
           name="email"
-          placeholder="Email address"
+          placeholder={t("emailAddress")}
           className="auth-input"
           value={form.email}
           onChange={handleChange}
@@ -147,7 +146,7 @@ function Register() {
         <input
           type="tel"
           name="phone"
-          placeholder="Mobile number"
+          placeholder={t("phoneNumber")}
           className="auth-input"
           value={form.phone}
           onChange={handleChange}
@@ -156,14 +155,14 @@ function Register() {
         <input
           type="password"
           name="password"
-          placeholder="Create password"
+          placeholder={t("password")}
           className="auth-input"
           value={form.password}
           onChange={handleChange}
         />
 
         <div className="role-title">
-          Register as
+          {t("selectAccount")}
         </div>
 
         <div className="role-buttons">
@@ -175,18 +174,13 @@ function Register() {
                 ? "selected-role"
                 : ""
             }`}
-            onClick={() =>
-              setRole("farmer")
-            }
+            onClick={() => setRole("farmer")}
           >
             <span>👨‍🌾</span>
 
             <div>
-              <strong>Farmer</strong>
-
-              <small>
-                List and sell produce
-              </small>
+              <strong>{t("farmerRole")}</strong>
+              <small>{t("farmerRoleSub")}</small>
             </div>
           </button>
 
@@ -197,18 +191,13 @@ function Register() {
                 ? "selected-role"
                 : ""
             }`}
-            onClick={() =>
-              setRole("buyer")
-            }
+            onClick={() => setRole("buyer")}
           >
             <span>🏪</span>
 
             <div>
-              <strong>Buyer</strong>
-
-              <small>
-                Find agricultural produce
-              </small>
+              <strong>{t("buyerRole")}</strong>
+              <small>{t("buyerRoleSub")}</small>
             </div>
           </button>
 
@@ -219,18 +208,13 @@ function Register() {
                 ? "selected-role"
                 : ""
             }`}
-            onClick={() =>
-              setRole("transporter")
-            }
+            onClick={() => setRole("transporter")}
           >
             <span>🚚</span>
 
             <div>
-              <strong>Transporter</strong>
-
-              <small>
-                Provide logistics service
-              </small>
+              <strong>{t("transporterRole")}</strong>
+              <small>{t("transporterRoleSub")}</small>
             </div>
           </button>
 
@@ -242,19 +226,18 @@ function Register() {
           disabled={loading}
         >
           {loading
-            ? "Creating Account..."
-            : "Create Account"}
+            ? t("registering")
+            : t("createAccount")}
         </button>
 
         <p className="auth-footer">
-          Already have an account?{" "}
+          {t("alreadyHaveAccount")}{" "}
           <Link to="/login">
-            Login
+            {t("loginHere")}
           </Link>
         </p>
 
       </div>
-
     </div>
   );
 }
