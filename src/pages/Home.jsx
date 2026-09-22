@@ -6,8 +6,9 @@ function Home() {
 
       {/* Navbar */}
       <nav className="navbar">
-        <div className="logo">
-          🌾 <span>UzhavarSetu</span> 
+        <div className="logo" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <img src="/logo.png" alt="Logo" style={{ width: "34px", height: "34px", borderRadius: "8px", objectFit: "contain", background: "#fff", padding: "2px" }} />
+          <span>UzhavarSetu</span> 
         </div>
 
         <div className="nav-links">
@@ -67,42 +68,24 @@ function Home() {
 
         </div>
 
-        {/* Dashboard Preview */}
-        <div className="dashboard-preview">
-
-          <div className="preview-header">
-            <div>
-              <small>Market Intelligence</small>
-              <h3>Tomato • Grade A</h3>
+        {/* Hero Ecosystem Showcase Card */}
+        <div className="hero-trio-showcase">
+          <div className="hero-trio-card">
+            <img
+              src="/uzhavar_hero_trio.jpg"
+              alt="UzhavarSetu Ecosystem - Farmer, Buyer, Transporter"
+              className="hero-trio-img"
+            />
+            <div className="hero-floating-badge badge-farmer">
+              👨‍🌾 Verified Farmer
             </div>
-
-            <span className="live-badge">● LIVE</span>
-          </div>
-
-          <div className="price-box">
-            <span>Current Market Price</span>
-            <strong>₹27/kg</strong>
-          </div>
-
-          <div className="forecast-box">
-            <div>
-              <span>🤖 AI Forecast</span>
-              <strong>₹29 – ₹31/kg</strong>
+            <div className="hero-floating-badge badge-buyer">
+              🏪 Direct Buyer
             </div>
-
-            <div className="trend">
-              ↗ +11.2%
+            <div className="hero-floating-badge badge-transporter">
+              🚚 AI Transporter
             </div>
           </div>
-
-          <div className="recommendation">
-            <span>💡</span>
-            <div>
-              <strong>Recommendation</strong>
-              <p>Consider waiting 1–2 days for a better price.</p>
-            </div>
-          </div>
-
         </div>
       </section>
 
@@ -223,8 +206,9 @@ function Home() {
 
       {/* Footer */}
       <footer>
-        <div className="logo">
-          🌾 <span>UzhavarSetu</span>
+        <div className="logo" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <img src="/logo.png" alt="Logo" style={{ width: "30px", height: "30px", borderRadius: "6px", objectFit: "contain", background: "#fff", padding: "2px" }} />
+          <span>UzhavarSetu</span>
         </div>
 
         <p>

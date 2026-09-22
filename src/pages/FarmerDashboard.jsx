@@ -1,9 +1,21 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import LogisticsModule from "../components/LogisticsModule";
+import { API_URL } from "../config";
 
 function FarmerDashboard() {
-  const API_URL = "https://agridirectai-backend.onrender.com";
   const navigate = useNavigate();
+  const addProduceFormRef = useRef(null);
+  const receivedBidsRef = useRef(null);
+
+  const scrollToPendingBids = () => {
+    if (receivedBidsRef.current) {
+      receivedBidsRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }
+  };
 
   const [farmer, setFarmer] = useState(null);
   const [farmerId, setFarmerId] = useState(null);
@@ -12,6 +24,22 @@ function FarmerDashboard() {
   const [bids, setBids] = useState([]);
 
   const [showForm, setShowForm] = useState(false);
+
+  const handleOpenAddProduce = () => {
+    setShowForm(true);
+    setEditingId(null);
+    setForecast(null);
+    setStatusMessage("");
+
+    setTimeout(() => {
+      if (addProduceFormRef.current) {
+        addProduceFormRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+      }
+    }, 80);
+  };
   const [editingId, setEditingId] = useState(null);
 
   const [loading, setLoading] = useState(true);
@@ -64,6 +92,14 @@ function FarmerDashboard() {
 
   const [negotiationMessage, setNegotiationMessage] =
     useState("");
+
+  /* MODALS FOR COMPACT VIEWS */
+  const [selectedProduce, setSelectedProduce] = useState(null);
+  const [selectedBid, setSelectedBid] = useState(null);
+
+  /* SHOW MORE / SHOW LESS STATES (MAX 2 BY DEFAULT) */
+  const [showAllProduce, setShowAllProduce] = useState(false);
+  const [showAllBids, setShowAllBids] = useState(false);
 
   /* ================================
      LOAD LOGGED-IN FARMER
@@ -974,6 +1010,22 @@ function FarmerDashboard() {
       )
     );
 
+  const displayedProduce = showAllProduce
+    ? produceList
+    : produceList.slice(0, 3);
+
+  const activePendingBids = receivedBids.filter((bid) =>
+    ["Pending", "Negotiation", "Counter Offer"].includes(bid.status) || bid.status === "Pending"
+  );
+
+  const previousBids = receivedBids.filter(
+    (bid) => !["Pending", "Negotiation", "Counter Offer"].includes(bid.status) && bid.status !== "Pending"
+  );
+
+  const displayedPastBids = showAllBids
+    ? previousBids
+    : previousBids.slice(0, 3);
+
   /* ================================
      SUMMARY
   ================================= */
@@ -1055,8 +1107,9 @@ function FarmerDashboard() {
       <div className="dashboard-header">
 
         <div>
-          <h1>
-            🌾 UzhavarSetu
+          <h1 style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <img src="/logo.png" alt="Logo" style={{ width: "38px", height: "38px", borderRadius: "8px", objectFit: "contain", background: "#fff", padding: "2px" }} />
+            UzhavarSetu
           </h1>
 
           <p>
@@ -1206,32 +1259,9 @@ function FarmerDashboard() {
 
                   <button
                     className="edit-profile-btn"
-                    onClick={() => {
-
-                      setProfileForm({
-                        name:
-                          farmer?.name ||
-                          "",
-
-                        phone:
-                          farmer?.phone ||
-                          "",
-
-                        location:
-                          farmer?.location ||
-                          "",
-
-                        farmName:
-                          farmer?.farmName ||
-                          ""
-                      });
-
-                      setEditProfile(
-                        true
-                      );
-                    }}
+                    onClick={() => navigate("/farmer-profile")}
                   >
-                    ✏️ Edit Profile
+                    ✏️ Edit Profile & Bank Details
                   </button>
 
                   <button
@@ -1417,7 +1447,12 @@ function FarmerDashboard() {
 
         </div>
 
-        <div className="summary-card">
+        <div
+          className="summary-card"
+          onClick={scrollToPendingBids}
+          style={{ cursor: "pointer", transition: "transform 0.2s, box-shadow 0.2s" }}
+          title="Click to jump to Received Bids"
+        >
 
           <span>
             ⏳ Pending Bids
@@ -1427,8 +1462,8 @@ function FarmerDashboard() {
             {pendingBids}
           </strong>
 
-          <small>
-            Waiting for response
+          <small style={{ color: "#2F5233", fontWeight: "600" }}>
+            Waiting for response ↓
           </small>
 
         </div>
@@ -1437,7 +1472,7 @@ function FarmerDashboard() {
 
       {/* ADD PRODUCE */}
 
-      <div className="farmer-section">
+      <div ref={addProduceFormRef} id="add-produce-form-section" className="farmer-section">
 
         <div className="section-header">
 
@@ -1457,21 +1492,11 @@ function FarmerDashboard() {
           <button
             className="primary-btn"
             onClick={() => {
-
-              setShowForm(
-                !showForm
-              );
-
-              setEditingId(
-                null
-              );
-
-              setForecast(
-                null
-              );
-
-              setStatusMessage("");
-
+              if (showForm) {
+                setShowForm(false);
+              } else {
+                handleOpenAddProduce();
+              }
             }}
           >
             {showForm
@@ -1766,106 +1791,56 @@ function FarmerDashboard() {
           </div>
 
         ) : (
+          <>
+            <div className="compact-produce-grid">
+              {displayedProduce.map((item) => (
+                <div className="compact-produce-card" key={item._id}>
+                  <div className="compact-card-header">
+                    <div className="crop-title-group">
+                      {item.photo ? (
+                        <img src={item.photo} alt={item.crop} className="compact-thumb" />
+                      ) : (
+                        <span className="crop-icon-badge">🌾</span>
+                      )}
+                      <div>
+                        <h3>{item.crop}</h3>
+                        <p className="crop-qty-grade">{item.quantity} kg · {item.quality || "Grade A"}</p>
+                      </div>
+                    </div>
+                    <span className="compact-status-tag">Active</span>
+                  </div>
 
-          produceList.map(
-            (item) => (
-
-              <div
-                className="produce-item"
-                key={
-                  item._id
-                }
-              >
-
-                {item.photo && (
-
-                  <img
-                    src={
-                      item.photo
-                    }
-                    alt={
-                      item.crop
-                    }
-                    className="produce-photo"
-                  />
-
-                )}
-
-                <div className="produce-info">
-
-                  <h3>
-                    🌾{" "}
-                    {item.crop}
-                  </h3>
-
-                  <p>
-                    📦{" "}
-                    {item.quantity}{" "}
-                    kg
-                  </p>
-
-                  <p>
-                    ⭐{" "}
-                    {item.quality}
-                  </p>
-
-                </div>
-
-                <div className="produce-info">
-
-                  <p>
-                    📍{" "}
-                    {item.location}
-                  </p>
-
-                  <p>
-                    📅 Harvest:{" "}
-                    {
-                      item.harvestDate
-                    }
-                  </p>
-
-                  <strong>
-                    💰 ₹
-                    {
-                      item.expectedPrice
-                    }
-                    /kg
-                  </strong>
-
-                </div>
-
-                <div className="produce-actions">
+                  <div className="compact-card-body">
+                    <div className="compact-meta-row">
+                      <span>📍 {item.location || "Location not set"}</span>
+                      <strong className="compact-price">₹{item.expectedPrice}/kg</strong>
+                    </div>
+                  </div>
 
                   <button
-                    className="secondary-btn"
-                    onClick={() =>
-                      handleEdit(
-                        item
-                      )
-                    }
+                    className="view-details-btn"
+                    onClick={() => setSelectedProduce(item)}
                   >
-                    ✏️ Edit
+                    🔍 View Details
                   </button>
-
-                  <button
-                    className="danger-btn"
-                    onClick={() =>
-                      handleDelete(
-                        item._id
-                      )
-                    }
-                  >
-                    🗑️ Delete
-                  </button>
-
                 </div>
+              ))}
+            </div>
 
+            {produceList.length > 3 && (
+              <div style={{ textAlign: "center", marginTop: "16px" }}>
+                <button
+                  className="secondary-btn"
+                  onClick={() => setShowAllProduce(!showAllProduce)}
+                  style={{ padding: "10px 22px", fontSize: "14px", borderRadius: "10px", fontWeight: "600" }}
+                >
+                  {showAllProduce
+                    ? "▲ Show Less Produce"
+                    : `▼ View More Produce (${produceList.length - 3} more)`}
+                </button>
               </div>
-
-            )
-          )
-
+            )}
+          </>
         )}
 
       </div>
@@ -2359,326 +2334,179 @@ function FarmerDashboard() {
       </div>
 
       {/* RECEIVED BIDS */}
+      <div ref={receivedBidsRef} id="received-bids-section" className="received-bids-section">
 
-      <div className="received-bids-section">
-
-        <div className="received-bids-header">
-
-          <div>
-
-            <h2>
-              💰 Received Bids
-            </h2>
-
-            <p>
-              Buyers interested in
-              your produce
-            </p>
-
-          </div>
-
-          <span className="bid-count">
-            {pendingBids} Pending
-          </span>
-
-        </div>
-
-        {bidLoading ? (
-
-          <p>
-            Loading bids...
-          </p>
-
-        ) : receivedBids.length ===
-          0 ? (
-
-          <div className="no-bids">
-
-            <div className="no-bids-icon">
-              💰
+        {/* SECTION 1: ACTIVE PENDING BIDS */}
+        <div style={{ marginBottom: "32px" }}>
+          <div className="received-bids-header" style={{ marginBottom: "16px" }}>
+            <div>
+              <h2 style={{ display: "flex", alignItems: "center", gap: "8px", margin: 0 }}>
+                ⏳ Pending Bids
+              </h2>
+              <p style={{ margin: "4px 0 0 0" }}>
+                Action required — Buyers waiting for your approval
+              </p>
             </div>
 
-            <h3>
-              No bids yet
-            </h3>
-
-            <p>
-              Buyer bids will appear
-              here when someone places
-              a bid on your produce.
-            </p>
-
+            <span className="bid-count" style={{ background: activePendingBids.length > 0 ? "#FEE2E2" : "#E2E8F0", color: activePendingBids.length > 0 ? "#991B1B" : "#475569" }}>
+              {activePendingBids.length} Pending
+            </span>
           </div>
 
-        ) : (
-
-          <div className="bids-list">
-
-            {receivedBids.map(
-              (bid) => (
-
-                <div
-                  className="bid-card"
-                  key={
-                    bid._id
-                  }
-                >
-
-                  <div className="bid-main">
-
-                    <div className="bid-crop">
-
-                      <div className="bid-crop-icon">
-                        🌾
-                      </div>
-
+          {bidLoading ? (
+            <p>Loading bids...</p>
+          ) : activePendingBids.length === 0 ? (
+            <div style={{ background: "#F0FDF4", border: "1px dashed #86EFAC", padding: "16px 20px", borderRadius: "12px", color: "#166534", fontSize: "14px", display: "flex", alignItems: "center", gap: "10px" }}>
+              <span>✓</span> No pending bids waiting for your decision right now.
+            </div>
+          ) : (
+            <div style={{ display: "grid", gap: "14px" }}>
+              {activePendingBids.map((bid) => (
+                <div className="bid-card" key={bid._id} style={{ borderLeft: "5px solid #E53E3E", background: "#FFFFFF", padding: "18px", borderRadius: "12px", boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid #E2E8F0", borderLeftWidth: "5px" }}>
+                  <div className="bid-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+                    <div className="bid-crop-info" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <span style={{ fontSize: "24px" }}>🌾</span>
                       <div>
-
-                        <h3>
-                          {
-                            bid.crop
-                          }
-                        </h3>
-
-                        <p>
-                          Buyer:{" "}
-                          {
-                            bid.buyerName
-                          }
-                        </p>
-
+                        <h3 style={{ margin: 0, fontSize: "18px", color: "#1A202C" }}>{bid.crop} — {bid.quantity} kg</h3>
+                        <p style={{ margin: "2px 0 0 0", fontSize: "13px", color: "#4A5568" }}>Buyer: <strong>{bid.buyerName || "Buyer"}</strong></p>
                       </div>
-
                     </div>
-
-                    <span
-                      className={`bid-status ${bid.status
-                        .toLowerCase()
-                        .replace(
-                          " ",
-                          "-"
-                        )}`}
-                    >
-                      {
-                        bid.status
-                      }
+                    <span className={`bid-status ${bid.status.toLowerCase().replace(" ", "-")}`}>
+                      {bid.status}
                     </span>
-
                   </div>
 
-                  <div className="bid-details">
-
+                  <div className="bid-details" style={{ display: "flex", gap: "24px", background: "#F7FAFC", padding: "12px 16px", borderRadius: "8px", border: "1px solid #E2E8F0", marginBottom: "14px" }}>
                     <div>
-
-                      <small>
-                        Quantity
-                      </small>
-
-                      <strong>
-                        {
-                          bid.quantity
-                        }{" "}
-                        kg
-                      </strong>
-
+                      <span style={{ fontSize: "12px", color: "#718096", display: "block" }}>Offered Price</span>
+                      <strong style={{ fontSize: "18px", color: "#2F5233" }}>₹{bid.bidPrice}/kg</strong>
                     </div>
-
                     <div>
-
-                      <small>
-                        Current Bid
-                      </small>
-
-                      <strong>
-                        ₹
-                        {
-                          bid.bidPrice
-                        }
-                        /kg
-                      </strong>
-
+                      <span style={{ fontSize: "12px", color: "#718096", display: "block" }}>Total Order Value</span>
+                      <strong style={{ fontSize: "18px", color: "#1A202C" }}>₹{(bid.quantity * bid.bidPrice).toLocaleString("en-IN")}</strong>
                     </div>
-
-                    <div>
-
-                      <small>
-                        Total Value
-                      </small>
-
-                      <strong>
-                        ₹
-                        {(
-                          bid.quantity *
-                          bid.bidPrice
-                        ).toLocaleString(
-                          "en-IN"
-                        )}
-                      </strong>
-
-                    </div>
-
                   </div>
 
-                  {bid.negotiationHistory &&
-                    bid
-                      .negotiationHistory
-                      .length >
-                      0 && (
-
-                      <div className="negotiation-history">
-
-                        <strong>
-                          💬 Negotiation History
-                        </strong>
-
-                        {bid.negotiationHistory.map(
-                          (
-                            history,
-                            index
-                          ) => (
-
-                            <div
-                              key={
-                                index
-                              }
-                              className="history-item"
-                            >
-
-                              <span>
-                                {history.by ===
-                                "Farmer"
-                                  ? "👨‍🌾 Farmer"
-                                  : "👨‍💼 Buyer"}
-                              </span>
-
-                              <strong>
-                                ₹
-                                {
-                                  history.price
-                                }
-                                /kg
-                              </strong>
-
-                              {history.message && (
-                                <small>
-                                  {
-                                    history.message
-                                  }
-                                </small>
-                              )}
-
-                            </div>
-
-                          )
-                        )}
-
-                      </div>
-
-                    )}
-
-                  {bid.status ===
-                    "Pending" && (
-
-                    <div className="bid-actions">
-
+                  {bid.status === "Pending" && (
+                    <div className="bid-actions" style={{ display: "flex", gap: "10px" }}>
                       <button
                         className="accept-bid-btn"
-                        onClick={() =>
-                          updateBidStatus(
-                            bid._id,
-                            "Accepted"
-                          )
-                        }
+                        onClick={() => updateBidStatus(bid._id, "Accepted")}
+                        style={{ padding: "8px 18px", fontSize: "13px", fontWeight: "700" }}
                       >
                         ✓ Accept Bid
                       </button>
-
                       <button
                         className="reject-bid-btn"
-                        onClick={() =>
-                          updateBidStatus(
-                            bid._id,
-                            "Rejected"
-                          )
-                        }
+                        onClick={() => updateBidStatus(bid._id, "Rejected")}
+                        style={{ padding: "8px 18px", fontSize: "13px" }}
                       >
-                        ✕ Reject Bid
+                        ✕ Reject
                       </button>
-
                       <button
                         className="negotiate-bid-btn"
                         onClick={() => {
-
-                          setNegotiatingBid(
-                            bid
-                          );
-
-                          setCounterPrice(
-                            bid.bidPrice
-                          );
-
-                          setNegotiationMessage(
-                            ""
-                          );
-
+                          setNegotiatingBid(bid);
+                          setCounterPrice(bid.bidPrice);
+                          setNegotiationMessage("");
                         }}
+                        style={{ padding: "8px 18px", fontSize: "13px" }}
                       >
-                        💬 Negotiate
+                        💬 Counter Offer
                       </button>
-
                     </div>
-
                   )}
 
-                  {bid.status ===
-                    "Counter Offer" && (
-
-                    <div className="counter-offer-info">
-
-                      <strong>
-                        💬 Counter Offer Sent
-                      </strong>
-
-                      <p>
-                        Your counter offer:
-                      </p>
-
-                      <strong>
-                        ₹
-                        {
-                          bid.counterOfferPrice
-                        }
-                        /kg
-                      </strong>
-
-                      {bid.negotiationMessage && (
-
-                        <p>
-                          "
-                          {
-                            bid.negotiationMessage
-                          }
-                          "
-                        </p>
-
-                      )}
-
-                      <small>
-                        Waiting for buyer response.
-                      </small>
-
+                  {bid.status === "Counter Offer" && (
+                    <div style={{ background: "#EDF2F7", padding: "10px 14px", borderRadius: "8px", fontSize: "13px" }}>
+                      <strong>Your Counter Offer: ₹{bid.counterOfferPrice}/kg</strong>
+                      {bid.negotiationMessage && <p style={{ margin: "4px 0 0", color: "#4A5568" }}>💬 "{bid.negotiationMessage}"</p>}
+                      <small style={{ color: "#718096", display: "block", marginTop: "4px" }}>Waiting for buyer response...</small>
                     </div>
-
                   )}
-
                 </div>
+              ))}
+            </div>
+          )}
+        </div>
 
-              )
-            )}
-
+        {/* SECTION 2: PREVIOUS BIDS HISTORY */}
+        <div style={{ paddingTop: "20px", borderTop: "1px dashed #CBD5E0" }}>
+          <div className="received-bids-header" style={{ marginBottom: "16px" }}>
+            <div>
+              <h2 style={{ display: "flex", alignItems: "center", gap: "8px", margin: 0 }}>
+                📜 Previous Bids History
+              </h2>
+              <p style={{ margin: "4px 0 0 0" }}>
+                History of accepted and rejected buyer bids
+              </p>
+            </div>
+            <span className="bid-count" style={{ background: "#E2E8F0", color: "#475569" }}>
+              {previousBids.length} Total History
+            </span>
           </div>
 
-        )}
+          {bidLoading ? (
+            <p>Loading history...</p>
+          ) : previousBids.length === 0 ? (
+            <div className="no-bids" style={{ padding: "20px" }}>
+              <p>No previous bids history yet.</p>
+            </div>
+          ) : (
+            <>
+              <div className="compact-bids-grid">
+                {displayedPastBids.map((bid) => (
+                  <div className="compact-bid-card" key={bid._id}>
+                    <div className="compact-bid-top">
+                      <div className="compact-bid-crop-info">
+                        <span className="compact-bid-icon">🌾</span>
+                        <div>
+                          <h3>{bid.crop} — {bid.quantity} kg</h3>
+                          <p className="compact-buyer-name">Buyer: <strong>{bid.buyerName || "Buyer"}</strong></p>
+                        </div>
+                      </div>
+                      <span className={`bid-status ${bid.status.toLowerCase().replace(" ", "-")}`}>
+                        {bid.status}
+                      </span>
+                    </div>
+
+                    <div className="compact-bid-middle">
+                      <div className="compact-bid-stat">
+                        <small>Offered Bid</small>
+                        <strong>₹{bid.bidPrice}/kg</strong>
+                      </div>
+                      <div className="compact-bid-stat">
+                        <small>Total Bid Value</small>
+                        <strong>₹{(bid.quantity * bid.bidPrice).toLocaleString("en-IN")}</strong>
+                      </div>
+                    </div>
+
+                    <button
+                      className="view-bid-details-btn"
+                      onClick={() => setSelectedBid(bid)}
+                    >
+                      📄 View Bid Details
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              {previousBids.length > 3 && (
+                <div style={{ textAlign: "center", marginTop: "16px" }}>
+                  <button
+                    className="secondary-btn"
+                    onClick={() => setShowAllBids(!showAllBids)}
+                    style={{ padding: "10px 22px", fontSize: "14px", borderRadius: "10px", fontWeight: "600" }}
+                  >
+                    {showAllBids
+                      ? "▲ Show Less Bids"
+                      : `▼ View More Bids (${previousBids.length - 3} more)`}
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+        </div>
 
         {negotiatingBid && (
 
@@ -2851,6 +2679,235 @@ function FarmerDashboard() {
           </div>
 
         )}
+
+        {/* PRODUCE DETAILS MODAL */}
+        {selectedProduce && (
+          <div className="modal-overlay" onClick={() => setSelectedProduce(null)}>
+            <div className="modal-card detail-modal-card" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <div>
+                  <h2>🌾 {selectedProduce.crop} Details</h2>
+                  <p className="modal-subtitle">Full produce listing details</p>
+                </div>
+                <button className="close-btn" onClick={() => setSelectedProduce(null)}>✕</button>
+              </div>
+
+              <div className="modal-body">
+                {selectedProduce.photo && (
+                  <div className="modal-photo-wrapper">
+                    <img src={selectedProduce.photo} alt={selectedProduce.crop} className="modal-produce-photo" />
+                  </div>
+                )}
+
+                <div className="details-grid">
+                  <div className="detail-item">
+                    <small>Crop Name</small>
+                    <strong>{selectedProduce.crop}</strong>
+                  </div>
+                  <div className="detail-item">
+                    <small>Quantity</small>
+                    <strong>{selectedProduce.quantity} kg</strong>
+                  </div>
+                  <div className="detail-item">
+                    <small>Quality / Grade</small>
+                    <strong>{selectedProduce.quality || "Grade A"}</strong>
+                  </div>
+                  <div className="detail-item">
+                    <small>Harvest Date</small>
+                    <strong>{selectedProduce.harvestDate}</strong>
+                  </div>
+                  <div className="detail-item">
+                    <small>Location</small>
+                    <strong>📍 {selectedProduce.location}</strong>
+                  </div>
+                  <div className="detail-item">
+                    <small>Expected Price</small>
+                    <strong>₹{selectedProduce.expectedPrice}/kg</strong>
+                  </div>
+                  <div className="detail-item">
+                    <small>Total Estimated Value</small>
+                    <strong className="highlight-green">₹{(Number(selectedProduce.quantity || 0) * Number(selectedProduce.expectedPrice || 0)).toLocaleString("en-IN")}</strong>
+                  </div>
+                  <div className="detail-item">
+                    <small>Listing Status</small>
+                    <span className="compact-status-tag">Active</span>
+                  </div>
+                  {selectedProduce.createdAt && (
+                    <div className="detail-item">
+                      <small>Listed Date</small>
+                      <strong>{new Date(selectedProduce.createdAt).toLocaleDateString()}</strong>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="modal-footer-actions">
+                <button
+                  className="secondary-btn"
+                  onClick={() => {
+                    const itemToEdit = selectedProduce;
+                    setSelectedProduce(null);
+                    handleEdit(itemToEdit);
+                  }}
+                >
+                  ✏️ Edit Produce
+                </button>
+                <button
+                  className="danger-btn"
+                  onClick={() => {
+                    const idToDelete = selectedProduce._id;
+                    setSelectedProduce(null);
+                    handleDelete(idToDelete);
+                  }}
+                >
+                  🗑️ Delete Produce
+                </button>
+                <button
+                  className="close-modal-btn"
+                  onClick={() => setSelectedProduce(null)}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* BID DETAILS MODAL */}
+        {selectedBid && (
+          <div className="modal-overlay" onClick={() => setSelectedBid(null)}>
+            <div className="modal-card detail-modal-card" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <div>
+                  <h2>💰 Bid Details — {selectedBid.crop}</h2>
+                  <p className="modal-subtitle">Buyer offer & negotiation information</p>
+                </div>
+                <button className="close-btn" onClick={() => setSelectedBid(null)}>✕</button>
+              </div>
+
+              <div className="modal-body">
+                <div className="details-grid">
+                  <div className="detail-item">
+                    <small>Produce Crop</small>
+                    <strong>🌾 {selectedBid.crop}</strong>
+                  </div>
+                  <div className="detail-item">
+                    <small>Quantity</small>
+                    <strong>{selectedBid.quantity} kg</strong>
+                  </div>
+                  <div className="detail-item">
+                    <small>Buyer Name</small>
+                    <strong>👨‍💼 {selectedBid.buyerName || "Buyer"}</strong>
+                  </div>
+                  {selectedBid.buyerLocation && (
+                    <div className="detail-item">
+                      <small>Buyer Location</small>
+                      <strong>📍 {selectedBid.buyerLocation}</strong>
+                    </div>
+                  )}
+                  <div className="detail-item">
+                    <small>Offered Price</small>
+                    <strong>₹{selectedBid.bidPrice}/kg</strong>
+                  </div>
+                  <div className="detail-item">
+                    <small>Total Bid Amount</small>
+                    <strong className="highlight-green" style={{ fontSize: '18px' }}>
+                      ₹{(Number(selectedBid.quantity || 0) * Number(selectedBid.bidPrice || 0)).toLocaleString("en-IN")}
+                    </strong>
+                  </div>
+                  <div className="detail-item">
+                    <small>Bid Status</small>
+                    <span className={`bid-status ${selectedBid.status.toLowerCase().replace(" ", "-")}`}>
+                      {selectedBid.status}
+                    </span>
+                  </div>
+                  {selectedBid.createdAt && (
+                    <div className="detail-item">
+                      <small>Bid Date</small>
+                      <strong>{new Date(selectedBid.createdAt).toLocaleDateString()}</strong>
+                    </div>
+                  )}
+                </div>
+
+                {/* Counter Offer Info */}
+                {selectedBid.status === "Counter Offer" && (
+                  <div className="counter-offer-info" style={{ marginTop: '16px' }}>
+                    <strong>💬 Counter Offer Sent</strong>
+                    <p>Your counter offer: <strong>₹{selectedBid.counterOfferPrice}/kg</strong></p>
+                    {selectedBid.negotiationMessage && (
+                      <p>"{selectedBid.negotiationMessage}"</p>
+                    )}
+                    <small>Waiting for buyer response.</small>
+                  </div>
+                )}
+
+                {/* Negotiation History */}
+                {selectedBid.negotiationHistory && selectedBid.negotiationHistory.length > 0 && (
+                  <div className="negotiation-history" style={{ marginTop: '16px' }}>
+                    <strong>💬 Negotiation History</strong>
+                    {selectedBid.negotiationHistory.map((history, index) => (
+                      <div key={index} className="history-item">
+                        <span>{history.by === "Farmer" ? "👨‍🌾 Farmer" : "👨‍💼 Buyer"}</span>
+                        <strong>₹{history.price}/kg</strong>
+                        {history.message && <small>{history.message}</small>}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="modal-footer-actions">
+                {selectedBid.status === "Pending" && (
+                  <>
+                    <button
+                      className="accept-bid-btn"
+                      onClick={() => {
+                        const bId = selectedBid._id;
+                        updateBidStatus(bId, "Accepted");
+                        setSelectedBid((prev) => prev ? { ...prev, status: "Accepted" } : null);
+                      }}
+                    >
+                      ✓ Accept Bid
+                    </button>
+                    <button
+                      className="reject-bid-btn"
+                      onClick={() => {
+                        const bId = selectedBid._id;
+                        updateBidStatus(bId, "Rejected");
+                        setSelectedBid((prev) => prev ? { ...prev, status: "Rejected" } : null);
+                      }}
+                    >
+                      ✕ Reject Bid
+                    </button>
+                    <button
+                      className="negotiate-bid-btn"
+                      onClick={() => {
+                        const bidToNegotiate = selectedBid;
+                        setSelectedBid(null);
+                        setNegotiatingBid(bidToNegotiate);
+                        setCounterPrice(bidToNegotiate.bidPrice);
+                        setNegotiationMessage("");
+                      }}
+                    >
+                      💬 Negotiate
+                    </button>
+                  </>
+                )}
+                <button
+                  className="close-modal-btn"
+                  onClick={() => setSelectedBid(null)}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* LOGISTICS & AI ROUTE OPTIMIZATION MODULE */}
+        <div style={{ marginTop: "35px" }}>
+          <LogisticsModule userRole="farmer" userId={farmer?._id} />
+        </div>
 
       </div>
 

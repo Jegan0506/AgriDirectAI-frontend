@@ -1,10 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { API_URL } from "../config";
 
 function Register() {
   const navigate = useNavigate();
-
-  const API_URL = "https://agridirectai-backend.onrender.com";
 
   const [role, setRole] = useState("");
 
@@ -110,8 +109,9 @@ function Register() {
 
       <div className="auth-card">
 
-        <div className="auth-logo">
-          🌾 <span>UzhavarSetu</span>
+        <div className="auth-logo" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px" }}>
+          <img src="/logo.png" alt="Logo" style={{ width: "40px", height: "40px", borderRadius: "8px", objectFit: "contain", background: "#fff", padding: "2px" }} />
+          <span>UzhavarSetu</span>
         </div>
 
         <h1>Create Account</h1>
@@ -208,6 +208,28 @@ function Register() {
 
               <small>
                 Find agricultural produce
+              </small>
+            </div>
+          </button>
+
+          <button
+            type="button"
+            className={`role-card ${
+              role === "transporter"
+                ? "selected-role"
+                : ""
+            }`}
+            onClick={() =>
+              setRole("transporter")
+            }
+          >
+            <span>🚚</span>
+
+            <div>
+              <strong>Transporter</strong>
+
+              <small>
+                Provide logistics service
               </small>
             </div>
           </button>

@@ -1,10 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { API_URL } from "../config";
 
 function Login() {
   const navigate = useNavigate();
-
-  const API_URL = "https://agridirectai-backend.onrender.com";
 
   const [role, setRole] = useState("");
   const [email, setEmail] = useState("");
@@ -64,6 +63,8 @@ function Login() {
       setTimeout(() => {
         if (data.role === "farmer") {
           navigate("/farmer-dashboard");
+        } else if (data.role === "transporter") {
+          navigate("/transporter-dashboard");
         } else {
           navigate("/buyer-dashboard");
         }
@@ -87,8 +88,9 @@ function Login() {
     <div className="auth-page">
       <div className="auth-card">
 
-        <div className="auth-logo">
-          🌾 <span>UzhavarSetu</span>
+        <div className="auth-logo" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px" }}>
+          <img src="/logo.png" alt="Logo" style={{ width: "40px", height: "40px", borderRadius: "8px", objectFit: "contain", background: "#fff", padding: "2px" }} />
+          <span>UzhavarSetu</span>
         </div>
 
         <h1>Welcome Back</h1>
@@ -149,6 +151,25 @@ function Login() {
             </div>
           </button>
 
+          <button
+            type="button"
+            className={`role-card ${
+              role === "transporter"
+                ? "selected-role"
+                : ""
+            }`}
+            onClick={() => setRole("transporter")}
+          >
+            <span>🚚</span>
+
+            <div>
+              <strong>Transporter</strong>
+
+              <small>
+                Deliver produce
+              </small>
+            </div>
+          </button>
         </div>
 
         <input
