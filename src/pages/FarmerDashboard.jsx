@@ -2,9 +2,12 @@ import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import LogisticsModule from "../components/LogisticsModule";
 import { API_URL } from "../config";
+import { useLanguage } from "../context/LanguageContext";
+import LanguageSelector from "../components/LanguageSelector";
 
 function FarmerDashboard() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const addProduceFormRef = useRef(null);
   const receivedBidsRef = useRef(null);
 
@@ -1117,8 +1120,8 @@ function FarmerDashboard() {
           </p>
         </div>
 
-        <div className="profile-wrapper">
-
+        <div className="profile-wrapper" style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <LanguageSelector />
           <button
             className="profile-button"
             onClick={() => {

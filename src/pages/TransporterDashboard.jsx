@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../config";
+import { useLanguage } from "../context/LanguageContext";
+import LanguageSelector from "../components/LanguageSelector";
 
 function TransporterDashboard() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const [transporter, setTransporter] = useState(null);
   const [transporterId, setTransporterId] = useState(null);
@@ -262,7 +265,8 @@ function TransporterDashboard() {
           <span>UzhavarSetu • Transporter Portal</span>
         </div>
 
-        <div className="profile-wrapper">
+        <div className="profile-wrapper" style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <LanguageSelector />
           <button
             className="profile-button"
             onClick={() => setProfileOpen(!profileOpen)}
